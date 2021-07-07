@@ -1,0 +1,50 @@
+public class CameraScript : MonoBehaviour
+{
+    public Camera Cam;
+    public GameObject Player;
+    public Transform CamLookPos;
+
+    private float currentX = 0.0f;
+    private float currentY = 0.0f;
+    public float sensivity = 4.0f;
+    public float distance = 5.0f;
+
+    void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        RotateCameraXY();
+        CameraZoom();
+    }
+
+    public void RotateCameraXY()
+    {
+        currentX -= Input.GetAxis("Mouse X") * sensivity * Time.deltaTime;
+        currentY += Input.GetAxis("Mouse Y") * sensivity * Time.deltaTime;
+
+        currentY = Mathf.Clamp(currentY, 15, 90);
+
+        Vector3 Direction = new Vector3(0, 0, -distance);
+        Quaternion rotation = Quaternion.Euler(currentY, currentX, 0);
+        transform.position = Player.transform.position + rotation * Direction;
+        transform.LookAt(CamLookPos);
+    }
+
+    public void CameraZoom()
+    {
+        if(Input.GetAxis("Mouse ScrollWheel") < 0 && distance < 8)
+        {
+            distance++;
+        }
+        else if(Input.GetAxis("Mouse ScrollWheel") > 0 && distance > 3)
+        {
+            distance--;
+        }
+
+    
+    }
+}
